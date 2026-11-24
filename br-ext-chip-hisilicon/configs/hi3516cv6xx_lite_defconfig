@@ -9,6 +9,8 @@ BR2_OPENIPC_SOC_FAMILY="hi3516cv6xx"
 BR2_OPENIPC_SOC_ALIASES="hi3516cv610 hi3516cv608"
 BR2_OPENIPC_VARIANT="lite"
 BR2_OPENIPC_FLASH_SIZE="16"
+BR2_OPENIPC_NOR_KERNEL_READ_SIZE=0x420000
+BR2_OPENIPC_NOR_FIRMWARE_OFFSET=0xC0000
 # OPENIPC_MAJESTIC defaults to "lite", which is the only cv6xx majestic
 # flavor published to OpenIPC S3 — what this variant wants anyway.
 
