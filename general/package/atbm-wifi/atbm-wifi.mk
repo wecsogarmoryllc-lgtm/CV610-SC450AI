@@ -1,9 +1,9 @@
+
 ################################################################################
 #
 # atbm-wifi
 #
 ################################################################################
-
 # OpenIPC's fork of gtxaspec/atbm-wifi, for the make 4.4 build fix and RX
 # copies that cannot pin 32 KiB each (OpenIPC/firmware#2455).
 ATBM_WIFI_SITE = $(call github,openipc,atbm-wifi,$(ATBM_WIFI_VERSION))
@@ -13,7 +13,6 @@ define ATBM_WIFI_INSTALL_TARGET_CMDS
 #	$(INSTALL) -m 755 -d $(TARGET_DIR)/usr/share/ATBM-WIFI_conf
 #	$(INSTALL) -m 644 -t $(TARGET_DIR)/usr/share/ATBM-WIFI_conf $(ATBM-WIFI_PKGDIR)/files/*.txt
 endef
-
 ATBM_WIFI_MODULE_MAKE_OPTS = KSRC=$(LINUX_DIR)
 
 # Set the module name based on the model and interface type
@@ -48,11 +47,17 @@ ifneq ($(BR2_PACKAGE_ATBM_WIFI_USB_PID),)
 ATBM_WIFI_MODULE_MAKE_OPTS += CONFIG_ATBM_USB_PID="$(BR2_PACKAGE_ATBM_WIFI_USB_PID)"
 endif
 endif
-
 ifeq ($(BR2_PACKAGE_ATBM_WIFI_INTERFACE_SDIO),y)
 ATBM_WIFI_MODULE_MAKE_OPTS += CONFIG_ATBM_USB_BUS=n CONFIG_ATBM_SDIO_BUS=y
 ATBM_WIFI_MODULE_MAKE_OPTS += CONFIG_ATBM_MODULE_NAME="$(ATBM_WIFI_MODEL_NAME)_sdio"
 endif
+
+# Fix missing return in ATBM management frame handler
+define ATBM_WIFI_FIX_RETURN
+	sed -i '368i\	return 0;' $(@D)/hal_apollo/dev_ioctl.c
+endef
+
+ATBM_WIFI_POST_PATCH_HOOKS += ATBM_WIFI_FIX_RETURN
 
 ATBM_WIFI_LICENSE = GPL-2.0
 
